@@ -1,0 +1,41 @@
+## Module features
+
+ - Show how to create a module
+
+## How to compile
+
+In directory
+
+`cmake -B build -DCMAKE_BUILD_TYPE=Release && cmake --build build --parallel 8`
+
+## How to run
+
+### 1. Test module
+
+Just run
+
+`./build/_deps/salamesh-build/salamesh`
+
+
+
+### 2. Add this module to your app modules list
+
+Go to app directory and add the module to `modules` array in `settings.json`:
+
+```json
+{
+	"modules": [
+		...
+		"/path/to/hello-module/build"
+	]
+}
+```
+
+The app will load this module on startup.
+
+## Localhost dev mode (Optional)
+
+If you want to modify module and use the local API of app rather than the one hosted on git: 
+
+ - create `CMakeLists.local.txt` at the root of the module
+ - put `set(SALAMESH_URI "/your/path/to/salamesh_dir")` in this file
