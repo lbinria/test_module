@@ -30,78 +30,23 @@ else()
   FetchContent_Declare(
     salamesh
     GIT_REPOSITORY "${SALAMESH_URI}"
-    # GIT_TAG        a91384386921d3b9a2dfe4d653dab74374e82e64
-    GIT_TAG        437744156372e3fcf78b19a46f83d4f80f66aa2f
+    GIT_TAG        eaad9251e1044fded2d0511f204b725b0443c0e8
     GIT_SUBMODULES_RECURSE ON
   )
   FetchContent_MakeAvailable(salamesh)
 
 endif()
 
-
-
 message(STATUS "Salamesh src directory: ${salamesh_SOURCE_DIR}")
-
-# Add salamesh directory as include
-include_directories(${salamesh_SOURCE_DIR}/core)
-# Link to salamesh core
-link_libraries(salamesh_core)
-
-# Include ImGui directory from salamesh
-include_directories(${salamesh_SOURCE_DIR}/include/imgui)
-
-
-set(IMGUI_SOURCES
-  ${salamesh_SOURCE_DIR}/include/imgui/imgui.cpp
-  ${salamesh_SOURCE_DIR}/include/imgui/imgui.h
-
-  ${salamesh_SOURCE_DIR}/include/imgui/imgui_demo.cpp
-  ${salamesh_SOURCE_DIR}/include/imgui/imgui_draw.cpp
-  ${salamesh_SOURCE_DIR}/include/imgui/imgui_widgets.cpp
-  ${salamesh_SOURCE_DIR}/include/imgui/imgui_tables.cpp
-
-  ${salamesh_SOURCE_DIR}/include/imgui/backends/imgui_impl_glfw.h
-  ${salamesh_SOURCE_DIR}/include/imgui/backends/imgui_impl_glfw.cpp
-  ${salamesh_SOURCE_DIR}/include/imgui/backends/imgui_impl_opengl3.h
-  ${salamesh_SOURCE_DIR}/include/imgui/backends/imgui_impl_opengl3.cpp
-  ${salamesh_SOURCE_DIR}/include/imgui/backends/imgui_impl_opengl3_loader.h
-)
-
-# TODO condition for WIN / Linux, because we cannot use find_package on windows
-find_package(Lua REQUIRED)
-
-
-# Include Ultimaille directory from salamesh to have consistent versions
-include_directories(hello_module
-  PRIVATE
-    "${CMAKE_BINARY_DIR}/_deps/ultimaille-src"
-)
-
-
-set(LUA_DIR "${salamesh_SOURCE_DIR}/libs/lua-5.4.2_Win64_dll17_lib")
-set(LUA_INCLUDE_DIR "${LUA_DIR}/include")
-
-include_directories(${LUA_INCLUDE_DIR})
-include_directories(hello_module 
-  PRIVATE 
-  "${salamesh_SOURCE_DIR}/include"
-)
-
-set(SOL_SOURCES
-    ${salamesh_SOURCE_DIR}/include/sol/sol.hpp
-    ${salamesh_SOURCE_DIR}/include/sol/config.hpp
-    ${salamesh_SOURCE_DIR}/include/sol/forward.hpp
-)
-
-link_libraries(${CMAKE_DL_LIBS} ultimaille m $<$<BOOL:${OpenMP_CXX_FOUND}>:OpenMP::OpenMP_CXX>)
 
 add_library(hello_module SHARED
   script.h
   interface.cpp
   renderers/my_line_renderer.h renderers/my_line_renderer.cpp
-  ${IMGUI_SOURCES}
-  ${SOL_SOURCES}
 )
+
+# Link to salamesh core
+target_link_libraries(hello_module PRIVATE salamesh_core)
 
 message("CMAKE_CURRENT_BINARY_DIR=" ${CMAKE_CURRENT_BINARY_DIR})
 
