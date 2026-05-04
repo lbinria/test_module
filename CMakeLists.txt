@@ -32,7 +32,7 @@ else()
   FetchContent_Declare(
     salamesh
     GIT_REPOSITORY "${SALAMESH_URI}"
-    GIT_TAG        2de61bccdeec1e25a227077e57d38e8b9ce383ee
+    GIT_TAG        25b4d75933307dc4e6c70deb05abbf726d43d9f9
     GIT_SUBMODULES_RECURSE ON
   )
   FetchContent_MakeAvailable(salamesh)
@@ -44,7 +44,6 @@ message(STATUS "Salamesh src directory: ${salamesh_SOURCE_DIR}")
 add_library(hello_module SHARED
   script.h
   interface.cpp
-  renderers/my_line_renderer.h renderers/my_line_renderer.cpp
 )
  
 # Link to salamesh core
@@ -61,48 +60,43 @@ message(STATUS "Salamesh build directory: ${salamesh_build_dir}")
 # Ensure salamesh is built
 add_dependencies(hello_module salamesh)
  
- 
+
+if(CMAKE_CONFIGURATION_TYPES)
+  # Multi-config generator (Visual Studio, Xcode, Ninja Multi-Config, etc.)
+  set(CONFIG_SUBDIR "/$<CONFIG>/")
+else()
+  # Single-config generator (Unix Makefiles, Ninja, etc.)
+  set(CONFIG_SUBDIR "/")
+endif()
+
+message(STATUS "Configuration subdirectory: ${CONFIG_SUBDIR}")
+
+# First, use configure_file to expand variables at configure time
+configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/settings.json.in 
+    ${CMAKE_CURRENT_SOURCE_DIR}/settings.json.tmp
+)
+
+# Second, use generate to expand generators at compile time
+file(GENERATE
+  OUTPUT ${salamesh_build_dir}${CONFIG_SUBDIR}settings.json
+  INPUT ${CMAKE_CURRENT_SOURCE_DIR}/settings.json.tmp 
+)
  
 # Copy systematically script.lua file to output build dir when build
 if (MSVC)
  
-  # Generate JSON settings file at configure time
-  file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/settings.json "
-  {
-    \"modules\": [
-      \"${CMAKE_CURRENT_BINARY_DIR}/Debug\",
-      \"modules/module_menubar\"
-    ]
-  }
-  ")
  
   add_custom_command(TARGET hello_module POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E make_directory "${salamesh_build_dir}/$<CONFIG>"
     COMMAND ${CMAKE_COMMAND} -E echo "Creating directory ${salamesh_build_dir}/$<CONFIG>"
- 
     COMMAND ${CMAKE_COMMAND} -E copy_if_different ${PROJECT_SOURCE_DIR}/script.lua ${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/script.lua
- 
-    # Generate JSON at build time (use generator expressions if needed)
-    # COMMAND ${CMAKE_COMMAND} -E echo_append "{\n\"modules\": [\n\"${CMAKE_CURRENT_BINARY_DIR}\",\n\"modules/module_menubar\"\n]\n}\n" > "${CMAKE_CURRENT_BINARY_DIR}/settings.json"
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-      "${CMAKE_CURRENT_BINARY_DIR}/settings.json"
-      "${salamesh_build_dir}/$<CONFIG>/settings.json"
     COMMAND ${CMAKE_COMMAND} -E echo "Copied settings.json to $<CONFIG>"
     COMMENT "Overall: copying resources for configuration $<CONFIG>"
   )
  
 else()
- 
-  # Generate JSON settings file after configuration time
-  file(WRITE ${salamesh_build_dir}/settings.json "
-  {
-    \"modules\": [
-      \"${CMAKE_CURRENT_BINARY_DIR}\",
-      \"modules/module_menubar\"
-    ]
-  }
-  ")
- 
+
   add_custom_target(copy-resources ALL
       COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_SOURCE_DIR}/script.lua ${CMAKE_CURRENT_BINARY_DIR}/
       COMMENT "Copying script to ${CMAKE_CURRENT_BINARY_DIR}/"

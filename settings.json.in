@@ -1,0 +1,6 @@
+  {
+    "modules": [
+      "${CMAKE_CURRENT_BINARY_DIR}${CONFIG_SUBDIR}",
+      "modules/module_menubar/"
+    ]
+  }

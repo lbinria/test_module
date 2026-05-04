@@ -1,0 +1,6 @@
+  {
+    "modules": [
+      "/home/tex/Projects/test_module/build/",
+      "modules/module_menubar/"
+    ]
+  }

@@ -1,10 +1,12 @@
 function init()
+
+	-- Call a C++ function from script.h
 	test_module.hello()
 
 	if app.is_debug then 
 		print("load model for debug...")
 		if not app.scene:load_model("assets/catorus_tri.geogram", "cat") then 
-			print("fail")
+			print("fail to load model.")
 		end
 		print("model loaded !")
 	end
@@ -13,12 +15,16 @@ end
 
 function draw_gui()
 
+	-- Create a new window
 	imgui.Begin("test_module")
+
+	-- Check if model some_model exists
 	if app.scene.models:has("some_model") then 
 		if imgui.Button("Save created mesh##test_model.btn_save") then 
 			app:save_model("some_model", "some_model.geogram") -- Replace this function doesnt exists anymore
 		end
 	end
+
 	imgui.End()
 
 end
@@ -80,16 +86,7 @@ function create_point()
 
 	model:push()
 
-	-- print("get renderer")
-	-- local r = app:add_renderer("PointSetRenderer", "psr")
-	-- local pr = r:as("PointSetRenderer")
-	-- print("add point")
-	-- pr:add_point(p)
-	-- print("push")
-	-- pr:push()
-	-- pr.size = 25.
 
-	-- print("button: " .. tostring(button) .. ", action: " .. tostring(action) .. ", mods: " .. mods)
 end
 
 function delete_facet()
@@ -139,13 +136,5 @@ end
 
 
 function update(dt)
-
-	-- test_module.display_lines()
-
-	local l = app.renderers:add("MyLineRenderer", "boobi")
-	local mlr = l:as_my_line_renderer()
-	mlr:clear_lines()
-	mlr:add_line(MyLine{a = vec3{0.,0.,0.}, b = vec3{1.,0.,0.}, color = vec3{1., 1., 0}})
-	mlr:push()
 
 end
