@@ -1,6 +1,6 @@
 #include "my_line_renderer.h"
 #include <helpers.h>
-#include <graphic_api.h>
+#include <utils/opengl_helper.h>
 
 MyLineRenderer::MyLineRenderer() : Renderer("", Shader(sl::shadersPath("gizmo_line.vert"), sl::shadersPath("gizmo_line.frag"))) {
 		

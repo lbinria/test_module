@@ -11,7 +11,7 @@
 #include <models/volume_model.h>
 #include <models/surface_model.h>
 #include <renderers/line_renderer.h>
-#include <element.h>
+#include <data/element_type.h>
 
 #include "renderers/my_line_renderer.h"
 
