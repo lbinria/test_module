@@ -102,25 +102,24 @@ end
 
 function mouse_button(button, action, mods)
 
+	print("click button=" .. tostring(button) .. ", action=" .. tostring(action) .. ", mods=" .. tostring(mods))
 
 	local st = app.input_state
 
 	if not st.mesh.any_hovered then 
+		print("no mesh hovered")
 		return
 	end
 
 	-- Check mesh
-	
-	print("go")
 	-- local hovered_model = app.scene.models:missing_function()
 	local hovered_model = app.scene.models:get_by_index(st.mesh.hovered)
 	print(hovered_model)
 
 	if hovered_model then 
-		print("click")
-		print("clock on: " .. tostring(hovered_model.name))
+		print("click on: " .. tostring(hovered_model.name))
 	else 
-		print("nullos")
+		print("no hovered model")
 	end
 
 	if button == 0 and action == 1 and mods == 2 then 
@@ -128,9 +127,6 @@ function mouse_button(button, action, mods)
 	elseif button == 1 and action == 1 and mods == 2 and hovered_model.name == "some_model" and st.facet.any_hovered then
 		delete_facet()
 	end
-
-
-
 
 end
 

@@ -32,7 +32,7 @@ else()
   FetchContent_Declare(
     salamesh
     GIT_REPOSITORY "${SALAMESH_URI}"
-    GIT_TAG        25b4d75933307dc4e6c70deb05abbf726d43d9f9
+    GIT_TAG        0237d8c1d6e72b874723c6114ac9ada46d2fcf24
     GIT_SUBMODULES_RECURSE ON
   )
   FetchContent_MakeAvailable(salamesh)
